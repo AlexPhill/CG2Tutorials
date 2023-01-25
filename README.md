@@ -6,4 +6,4 @@
 - [ ] Create textures
 - [ ] Create shader
 
-###### I couldn't get the build to work in the main folder btw..
+###### **I couldn't get the build to work in the main folder btw..**
