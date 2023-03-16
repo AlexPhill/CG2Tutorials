@@ -1,4 +1,4 @@
-Shader "Alexander/newShader2"
+Shader "Debug/DebugYColour"
 {
     Properties
     {
@@ -6,8 +6,6 @@ Shader "Alexander/newShader2"
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
-        _Intensity("Intensity", Range(0, 1)) = 1.0
-        _myCube("Reflection Map", Cube) = "grey" {}
     }
     SubShader
     {
@@ -22,17 +20,15 @@ Shader "Alexander/newShader2"
         #pragma target 3.0
 
         sampler2D _MainTex;
-    samplerCUBE _myCube;
 
         struct Input
         {
             float2 uv_MainTex;
-            float3 worldRefl;
+            float3 worldPos;
         };
 
         half _Glossiness;
         half _Metallic;
-        half _Intensity;
         fixed4 _Color;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
@@ -46,11 +42,16 @@ Shader "Alexander/newShader2"
         {
             // Albedo comes from a texture tinted by color
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-            o.Albedo = c.rgb * _Intensity;
+            if (IN.worldPos.y > 0) {
+                c.rgb = float3(0.7f, 0.1f, 0.3f);
+            }
+            else {
+                c.rgb = float3(0.4f, 0.2f, 0.9f);
+            }
+            o.Albedo = c.rgb;
             // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
-            o.Emission = texCUBE(_myCube, IN.worldRefl).rgb;
             o.Alpha = c.a;
         }
         ENDCG
